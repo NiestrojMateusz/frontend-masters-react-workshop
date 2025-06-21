@@ -46,7 +46,7 @@ export const App = () => {
                   key={timer.id}
                   timerRef={timer}
                   onDelete={() => {
-                    send('DELETE');
+                    send({ type: 'DELETE', index: i });
                   }}
                   onAdd={() => {
                     send('CREATE');

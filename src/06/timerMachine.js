@@ -1,7 +1,6 @@
 import { createMachine, assign } from 'xstate';
 
 const timerExpired = (ctx) => ctx.elapsed >= ctx.duration;
-
 export const timerMachine = createMachine({
   initial: 'idle',
   context: {
@@ -20,10 +19,23 @@ export const timerMachine = createMachine({
       },
     },
     running: {
-      // Add the `normal` and `overtime` nested states here.
-      // Don't forget to add the initial state (`normal`)!
-      // ...
-
+      initial: 'normal',
+      states: {
+        normal: {
+          always: {
+            cond: timerExpired,
+            target: 'overtime',
+          },
+          on: {
+            RESET: undefined
+          }
+        },
+        overtime: {
+          on: {
+            TOGGLE: undefined,
+          }
+        }
+      },
       on: {
         TICK: {
           actions: assign({
@@ -45,8 +57,6 @@ export const timerMachine = createMachine({
     },
   },
   on: {
-    RESET: {
-      target: '.idle',
-    },
-  },
+    RESET: '.idle',
+  }
 });
